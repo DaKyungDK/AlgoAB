@@ -1,0 +1,2 @@
+Dijkstra.pptx 오타
+- 48p. `2. 과정을 다 합치면 M = O(M)` --- `2. 과정을 다 합치면 Mlog(M)` heap push 비용 발생

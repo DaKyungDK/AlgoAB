@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <algorithm>
+#define MAX_N 10009
+#define MAX_M 1000009
+using namespace std;
+
+struct Edge {
+	int left, right, dist;
+	Edge() {}
+	Edge(int _left, int _right, int _dist){
+		left = _left;
+		right = _right;
+		dist = _dist;
+	}
+	bool operator<(const Edge &e)const{
+		return left < e.left;
+	}
+};
+
+struct dynamic_adjacency_list {
+	int m, start_index[MAX_N];
+	Edge e[MAX_M];
+	void init(int n){
+		m = 0;
+		for (int i=1;i<=n;i++) start_index[i]=0;
+	}
+	void push(int _left, int _right, int _dist){
+		e[++m] = Edge(_left, _right, _dist);
+	}
+	void sort(){
+		std::sort(e+1, e+m+1);
+		for (int i=1;i<=m;i++) if (!start_index[e[i].left]) start_index[e[i].left] = i;
+	}
+	int get_start(int left){
+		return start_index[left];
+	}
+}edge_list;
+
+int main(){
+	int n,m,k,i;
+	scanf("%d %d %d",&n,&m,&k);
+	edge_list.init(n);
+	for (i=1;i<=m;i++){
+		int a,b,c;
+		scanf("%d %d %d",&a,&b,&c);
+		edge_list.push(a,b,c);
+	}
+	edge_list.sort();
+	for (i=1;i<=edge_list.m;i++) printf("%d %d %d\n",edge_list.e[i].left, edge_list.e[i].right, edge_list.e[i].dist);
+}

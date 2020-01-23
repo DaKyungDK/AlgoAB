@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <algorithm>
+#define N_MAX 200009
+#define M 1000009
+using namespace std;
+
+struct Edge {
+	int left, right;
+	long long int dist;
+	Edge(){}
+	Edge(int a, int b, long long int c) { left=a; right=b; dist=c; }
+}edge[M], temp[M];
+
+struct min_heap {
+	int N;
+	Edge s[M];	
+	void init() { N=0; }
+	void push(Edge a){
+		s[++N] = a;
+		for (int i=N;i>1;i>>=1){
+			int j = i>>1;
+			if (s[i].dist < s[j].dist) swap(s[i], s[j]);
+			else break;
+		}
+	}
+	bool empty(){ return N==0; }
+	void pop(){
+		s[1]=s[N--];
+		for (int i=1;i*2<=N;){
+			int j = 2*i;
+			if (2*i+1<=N && s[2*i+1].dist < s[2*i].dist) j=2*i+1;
+			if (s[i].dist > s[j].dist){ swap(s[i], s[j]); i=j; }
+			else break;
+		}
+	}
+	Edge top(){ return s[1]; }
+}q;
+
+void sort(int left, int right){
+	if (left == right) return;	
+	int mid=(left+right)>>1;
+	sort(left, mid); sort(mid+1, right);
+	int l = left, r = mid+1, i = left;
+	while(l <= mid && r <= right){
+		if (edge[l].left < edge[r].left) temp[i++] = edge[l++];
+		else temp[i++] = edge[r++];
+	}
+	while(l <= mid) temp[i++] = edge[l++];
+	while(r <= right) temp[i++] = edge[r++];
+	for (i=left;i<=right;i++) edge[i] = temp[i];
+}
+
+int tc, n, m, chk[N_MAX], start_i[N_MAX], end_i[N_MAX];
+long long int d[N_MAX], ans, local_min;
+
+void dijkstra(){
+	int i;
+	for (i=1;i<=n;i++) d[i]=-1;
+	q.init();
+	q.push(Edge(1, 0, 0));
+	d[1] = 0;
+	while(!q.empty()){
+		Edge here = q.top(); q.pop();
+		if (d[here.left] < here.dist) continue;
+		for (i=start_i[here.left];i<=end_i[here.left];i++){
+			Edge there = edge[i];
+			if (d[there.right] == -1 || d[there.right] > here.dist + there.dist) {
+				d[there.right] = here.dist + there.dist;
+				q.push(Edge(there.right, 0, d[there.right]));
+			}
+		}
+	}
+}
+
+int main(){
+	int i;
+	int T; scanf("%d",&T); while (T--) {
+		scanf("%d %d",&n,&m);
+		for (i=1;i<=m;i++){
+			scanf("%d %d %d", &edge[2*i-1].left, &edge[2*i-1].right, &edge[2*i-1].dist);
+			edge[2*i] = Edge(edge[2*i-1].right, edge[2*i-1].left, edge[2*i-1].dist);
+		}
+		m<<=1;
+		sort(1, m);
+		for (i=1;i<=n;i++) start_i[i]=0;
+		for (i=1;i<=m;i++){
+			if (!start_i[edge[i].left]) start_i[edge[i].left] = i;
+			end_i[edge[i].left] = i;
+		}
+		dijkstra();
+		ans = 0;
+		for (i=2;i<=n;i++) {
+			local_min = 2e9+9;
+			for (int j=start_i[i];j<=end_i[i];j++) 
+				if (d[edge[j].right] + edge[j].dist == d[edge[j].left] && local_min > edge[j].dist)
+					local_min = edge[j].dist;
+			ans += local_min;
+		}
+		printf("#%d %lld\n", ++tc, ans);
+	}
+}

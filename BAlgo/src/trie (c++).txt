@@ -1,0 +1,31 @@
+#include <stdio.h>
+
+struct NODE {
+	NODE *next[26];
+	int sum;
+	NODE(){ sum = 0; }
+}*root;
+
+void init() {
+	root = new NODE();
+}
+
+void insert(int buffer_size, char *buf){
+	NODE *here = root;
+	while(*buf){
+		if (here->next[*buf-'a'] == nullptr) here->next[*buf-'a'] = new NODE();
+		here = here->next[*buf-'a'];
+		here->sum++;
+		buf++;
+	}
+}
+
+int query(int buffer_size, char *buf){
+	NODE *here = root;
+	while(*buf){
+		if (here->next[*buf-'a'] == nullptr) return 0;
+		here = here->next[*buf-'a'];
+		buf++;
+	}
+	return here->sum;
+}
