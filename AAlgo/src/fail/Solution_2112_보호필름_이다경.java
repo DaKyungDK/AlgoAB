@@ -1,4 +1,4 @@
-package Study;
+package fail;
 //완탐+가지치기..ㅜ 미완
 import java.io.BufferedReader;
 import java.io.IOException;
