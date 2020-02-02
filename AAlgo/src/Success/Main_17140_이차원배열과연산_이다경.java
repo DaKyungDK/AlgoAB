@@ -1,13 +1,9 @@
-package fail;
+package Success;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
@@ -29,7 +25,6 @@ public class Main_17140_이차원배열과연산_이다경 {
 	
 	static int r,c,k,time;
 	static int[][] A = new int[101][101];
-//	static PriorityQueue<Node> pq = new PriorityQueue<>();
 	static int[] cnt = new int[100000];
 	static PriorityQueue<Integer> pq = new PriorityQueue<>();
 	static PriorityQueue<Node> pqNode = new PriorityQueue<>();
@@ -49,16 +44,15 @@ public class Main_17140_이차원배열과연산_이다경 {
 				A[i][j]=Integer.parseInt(st.nextToken());
 			}
 		}
-		int R=3, C=3;//행의 개수:C 열의 개수:R
+		int R=3, C=3;//행의 개수:R 열의 개수:C
 		
 		while(A[r][c]!=k) {
 			Arrays.fill(cnt, 0);
 			time++;
-			if(C >= R) {//행
-				int c = C;
-				for (int i = 1; i <= R; i++) {
-					for (int j = 1; j <= c; j++) {
-						if(A[i][j]==0) break;
+			if(R >= C) {//행
+				for (int i = 1; i <= 100; i++) {
+					for (int j = 1; j <= 100; j++) {
+						if(A[i][j]==0) continue;
 						if(pq.contains(A[i][j])) cnt[A[i][j]]++;
 						else {
 							pq.add(A[i][j]);
@@ -83,18 +77,17 @@ public class Main_17140_이차원배열과연산_이다경 {
 						A[i][index++]=node.num;
 						A[i][index++]=node.cnt;
 					}
-					if(c<index-1) C=index-1;
-					else if(c>index-1) {
-						for (int j = index; j <= c; j++) {
+					if(C<index-1) C=index-1;
+					else if(C>index-1) {
+						for (int j = index; j <= C; j++) {
 							A[i][j] = 0;
 						}
 					}
 				}
 			}else {//열
-				int r = R;
-				for (int j = 1; j <= C; j++) {
-					for (int i = 1; i <= r; i++) {
-						if(A[i][j]==0) break;
+				for (int j = 1; j <= 100; j++) {
+					for (int i = 1; i <= 100; i++) {
+						if(A[i][j]==0) continue;
 						if(pq.contains(A[i][j])) cnt[A[i][j]]++;
 						else {
 							pq.add(A[i][j]);
@@ -119,14 +112,17 @@ public class Main_17140_이차원배열과연산_이다경 {
 						A[index++][j]=node.cnt;
 					}
 					if(R<index-1) R=index-1;
-					else if(r>index-1) {
-						for (int i = index; i <= r; i++) {
+					else if(R>index-1) {
+						for (int i = index; i <= R; i++) {
 							A[i][j] = 0;
 						}
 					}
-					}
 				}
-			
+			}
+			if(time>100) {
+				time=-1;
+				break;
+			}
 		}
 		System.out.println(time);
 	}//end main..
