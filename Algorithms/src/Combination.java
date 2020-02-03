@@ -1,15 +1,22 @@
-//N개중에 num개 고르기. i:현재 몇개 골랐는지 개수
+//M개중에 m개 고르기. i:현재 몇개 골랐는지 전체 개수, selectcnt:현재 내가 뽑은 애 개수
 public class Combination {
-	static int N=10;
-	private static void combi(int num,int i) {
-		if(i==num) {
+	static int M=10;
+	static boolean[] maxinfobool = new boolean[10];
+	private static void combi1(int m, int selectcnt, int totcnt) {
+		if(M==totcnt) {
 			
+			return;
 		}
-		if(N-i>N/2-num) {
-			combi(num,i+1);
+		if(M-totcnt>m-selectcnt) {
+			maxinfobool[totcnt] = false;
+			combi1(m,selectcnt,totcnt+1);
 		}
-		if(N/2>num) {
-			combi(num+1,i+1);
+		if(m>selectcnt) {
+			maxinfobool[totcnt] = true;
+			combi1(m,selectcnt+1,totcnt+1);
 		}
 	}
 }
+
+
+
