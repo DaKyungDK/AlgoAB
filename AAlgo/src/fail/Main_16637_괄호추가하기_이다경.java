@@ -3,6 +3,7 @@ package fail;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -10,6 +11,8 @@ public class Main_16637_괄호추가하기_이다경 {
 	static int N,max;
 	static int[] open, close;
 	static boolean[] openb, closeb;
+	static ArrayList<Integer> openarrl = new ArrayList<Integer>();
+	static ArrayList<Integer> closearrl = new ArrayList<Integer>();
 	static char[] charr;
 	static Stack<Character> stack = new Stack();
 	
@@ -18,7 +21,7 @@ public class Main_16637_괄호추가하기_이다경 {
 		
 		N = Integer.parseInt(br.readLine());
 		String str = br.readLine();
-		charr = new char[N*2];
+		charr = new char[N*2+1];
 		Arrays.fill(charr, 'a');
 		open= new int[N/2];
 		close= new int[N/2];
@@ -60,25 +63,34 @@ public class Main_16637_괄호추가하기_이다경 {
 		if(n>selectcnt) {
 			openb[totcnt] = true;
 			combiopen(n,selectcnt+1, totcnt+1);
+			openb[totcnt] = false;
 		}
 	}
 
 	private static void combiclose(int n, int selectcnt, int totcnt) {
 		if(n==selectcnt) {
 			for (int i = 0; i < N/2; i++) {
-				if(open[i]>=close[i]) return;
-				if(i<N/2-1) {
+				if(openb[i]) {
+					openarrl.add(open[i]);
+				}
+				if(closeb[i]) {
+					closearrl.add(close[i]);
+				}
+			}
+			for (int i = 0; i < n; i++) {
+				if(openarrl.get(i)>=closearrl.get(i)) return;
+				if(i<n-1) {
 					if(close[i]>=open[i+1]) return;
 				}
 			}
-			for (int i = 0; i < N/2; i++) {
-				charr[open[i]]='(';
-				charr[close[i]]=')';
+			for (int i = 0; i < n; i++) {
+				charr[openarrl.get(i)-1]='(';
+				charr[closearrl.get(i)+1]=')';
 			}
 			clac();
-			for (int i = 0; i < N/2; i++) {
-				charr[open[i]]='a';
-				charr[close[i]]='a';
+			for (int i = 0; i < n; i++) {
+				charr[openarrl.get(i)]='a';
+				charr[closearrl.get(i)]='a';
 			}
 			return;
 		}
@@ -89,35 +101,61 @@ public class Main_16637_괄호추가하기_이다경 {
 		if(n>selectcnt) {
 			closeb[totcnt] = true;
 			combiclose(n,selectcnt+1, totcnt+1);
+			closeb[totcnt] = false;
 		}
 	}
 
 	private static void clac() {
-		int result=0,a=-1,b=-1;
-		for (int i = 0; i < N*2; i++) {
+		int result=0,a=-1,b=-1,r=0;
+		char op=' ';
+		boolean avalue=false;
+		
+		for (int i = 0; i <= N*2; i++) {
 			if(charr[i]=='a') continue;
 			switch(charr[i]) {
 			case '+':
-				stack.add('+');
+				op='+';
 				break;
 			case '-':
-				stack.add('-');
+				op='-';
 				break;
 			case '*':
-				stack.add('*');
+				op='*';
 				break;
 			case '(':
+				if(avalue) {
+					stack.add((char)(a+'0'));
+					stack.add(op);
+					avalue=false;
+				}
 				break;
 			case ')':
+				b=a;
+				op=stack.pop();
+				a=stack.pop()-'0';
+				r=0;
+				switch(op) {
+				case '+':
+					r = a+b;
+					break;
+				case '-':
+					r = a-b;
+					break;
+				case '*':
+					r = a*b;
+					break;
+				}
+				a=r; b=-1; op=' ';
 				break;
 			default : //숫자
-				if(a<0) {
+				if(!avalue) {
 					a=charr[i]-'0';
+					avalue=true;
 				}
 				else {
 					b=charr[i]-'0';
-					int r=0;
-					switch(stack.pop()) {
+					r=0;
+					switch(op) {
 					case '+':
 						r = a+b;
 						break;
@@ -128,12 +166,12 @@ public class Main_16637_괄호추가하기_이다경 {
 						r = a*b;
 						break;
 					}
-					a=r; b=-1;
+					a=r; b=-1; op=' ';
 				}
-				break;	
+				break;
 			}
 		}
-		
+		result=r;
 		if(result>max) max=result;
 	}
 
