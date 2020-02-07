@@ -1,0 +1,18 @@
+ <Floydwarshall>
+	/*초기화*/		
+	int N // 노드 갯수
+	int[][] D = new int[N][N];
+	D[i][j] = INF; //최댓값으로 초기화
+?
+	/**플로이드 워샬 알고리즘**/
+	for(int k=0; k < N; k++) {	// 1.경유지	
+		for (int i = 0; i < N; i++) {	// 2.출발지	
+			if(k==i) continue; //경유지와 출발지가 같다면 패스
+			for (int j = 0; j < N; j++) {	// 3.도착지
+				if(k==j | i==j) continue;	//경유지와 도착지가 같거나 출발지와 도착지가 같다면 패스
+				if(D[i][k] + D[k][j] < D[i][j]) {
+					D[i][j] = D[i][k] + D[k][j];
+				}
+			}
+		}
+	}
