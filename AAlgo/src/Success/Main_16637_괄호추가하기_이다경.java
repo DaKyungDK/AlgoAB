@@ -1,4 +1,4 @@
-package fail;
+package Success;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +15,7 @@ public class Main_16637_괄호추가하기_이다경 {
 	static ArrayList<Integer> closearrl = new ArrayList<Integer>();
 	static char[] charr;
 	static Stack<Character> stack = new Stack();
+	static Stack<Integer> stackInt = new Stack<Integer>();
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -27,7 +28,7 @@ public class Main_16637_괄호추가하기_이다경 {
 		close= new int[N/2];
 		openb= new boolean[N/2];
 		closeb= new boolean[N/2];
-		
+		max = Integer.MIN_VALUE;
 		int index = 1;
 		for (int i = 0; i < N/2; i++) {
 			open[i]=index;
@@ -47,6 +48,7 @@ public class Main_16637_괄호추가하기_이다경 {
 		for (int i = 0; i < N/2; i++) {
 			combiopen(i,0,0);
 		}
+		if(N==1) max = charr[1]-'0';
 		System.out.println(max);
 	}
 
@@ -69,6 +71,8 @@ public class Main_16637_괄호추가하기_이다경 {
 
 	private static void combiclose(int n, int selectcnt, int totcnt) {
 		if(n==selectcnt) {
+			openarrl.clear();
+			closearrl.clear();
 			for (int i = 0; i < N/2; i++) {
 				if(openb[i]) {
 					openarrl.add(open[i]);
@@ -78,9 +82,9 @@ public class Main_16637_괄호추가하기_이다경 {
 				}
 			}
 			for (int i = 0; i < n; i++) {
-				if(openarrl.get(i)>=closearrl.get(i)) return;
+				if(openarrl.get(i)+4!=closearrl.get(i)) return;
 				if(i<n-1) {
-					if(close[i]>=open[i+1]) return;
+					if(closearrl.get(i)>=openarrl.get(i+1)) return;
 				}
 			}
 			for (int i = 0; i < n; i++) {
@@ -89,8 +93,8 @@ public class Main_16637_괄호추가하기_이다경 {
 			}
 			clac();
 			for (int i = 0; i < n; i++) {
-				charr[openarrl.get(i)]='a';
-				charr[closearrl.get(i)]='a';
+				charr[openarrl.get(i)-1]='a';
+				charr[closearrl.get(i)+1]='a';
 			}
 			return;
 		}
@@ -124,15 +128,16 @@ public class Main_16637_괄호추가하기_이다경 {
 				break;
 			case '(':
 				if(avalue) {
-					stack.add((char)(a+'0'));
+					stackInt.add(a);
 					stack.add(op);
 					avalue=false;
 				}
 				break;
 			case ')':
+				if(stack.isEmpty()) continue;
 				b=a;
 				op=stack.pop();
-				a=stack.pop()-'0';
+				a=stackInt.pop();
 				r=0;
 				switch(op) {
 				case '+':
