@@ -16,7 +16,6 @@ public class Main_9328_열쇠_이다경 {
 	static ArrayList<Integer> startpoint = new ArrayList<Integer>();
 	static Queue<Integer> qu = new LinkedList<Integer>();
 	static int[][] dir = {{-1,0},{1,0},{0,-1},{0,1}};//상하좌우
-	static ArrayList<Integer> documents = new ArrayList<Integer>();
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -30,7 +29,6 @@ public class Main_9328_열쇠_이다경 {
 			w = Integer.parseInt(st.nextToken());
 			key.clear();
 			clearSelected();
-			documents.clear();
 			startpoint.clear();
 			cnt=0;
 			
@@ -39,7 +37,13 @@ public class Main_9328_열쇠_이다경 {
 				for (int j = 0; j < w; j++) {
 					map[i][j] = str.charAt(j);
 					if(i==0 || j==0 || i==h-1 || j==w-1) {
-						if(map[i][j]=='.') {
+						if(map[i][j]=='.' || map[i][j]=='$' || (map[i][j]>='A' && map[i][j]<='Z')) {
+							startpoint.add(i*w+j);
+						}else if(map[i][j]>='a' && map[i][j]<='z') {
+							if(!key.contains(map[i][j])) {
+								key.add(map[i][j]);
+							}
+							map[i][j]='.';
 							startpoint.add(i*w+j);
 						}
 					}
@@ -59,42 +63,52 @@ public class Main_9328_열쇠_이다경 {
 			while(startIndex<size) {
 				point = startpoint.get(startIndex++);
 				qu.add(point);
+				x=point/w;
+				y=point%w;
+				selected[x][y] = true;
+				
+				char cur = map[x][y];
+				if(cur=='$') {
+					cnt++;
+					map[x][y] = '.';
+				}else if(cur>='A'&& cur<='Z') {
+					if(!key.contains((char)(cur+32))) {
+						qu.poll();
+					}
+				}
 				
 A:				while(!qu.isEmpty()) {
 					point = qu.poll();
 					x=point/w;
 					y=point%w;
-					selected[x][y] = true;
 					for (int d = 0; d < 4; d++) {
 						nextX = x+dir[d][0];
 						nextY = y+dir[d][1];
 						
 						if(nextX>=0 && nextX<h &&nextY>=0 &&nextY<w) {
-							char cur = map[nextX][nextY];
+							cur = map[nextX][nextY];
 							if(cur=='.') {
 								if(!selected[nextX][nextY]) {
 									qu.add(nextX*w+nextY);
 									selected[nextX][nextY] = true;
 								}
-//							}else if(cur=='$') {
-//								if(documents.contains(nextX*w+nextY)) {
-//									continue;
-//								}else {
-//									cnt++;
-//									documents.add(nextX*w+nextY);
-//									if(!selected[nextX][nextY]) {
-//										qu.add(nextX*w+nextY);
-//										selected[nextX][nextY] = true;
-//									}
-//								}
+							}else if(cur=='$') {
+								if(!selected[nextX][nextY]) {
+									qu.add(nextX*w+nextY);
+									selected[nextX][nextY] = true;
+									cnt++;
+									map[nextX][nextY]='.';
+								}
 							}else if(cur>='a'&& cur<='z') {
 								if(!key.contains(cur)) {
 									key.add(cur);
 									startIndex=0;
 									clearSelected();
 									qu.clear();
+									map[nextX][nextY]='.';
 									break A;//처음부터 다시 검사
 								}else {
+									map[nextX][nextY]='.';
 									if(!selected[nextX][nextY]) {
 										qu.add(nextX*w+nextY);
 										selected[nextX][nextY] = true;
@@ -102,6 +116,7 @@ A:				while(!qu.isEmpty()) {
 								}
 							}else if(cur>='A'&& cur<='Z') {
 								if(key.contains((char)(cur+32))) {
+									map[nextX][nextY]='.';
 									if(!selected[nextX][nextY]) {
 										qu.add(nextX*w+nextY);
 										selected[nextX][nextY] = true;
@@ -109,7 +124,8 @@ A:				while(!qu.isEmpty()) {
 								}
 							}
 						}
-					}
+						
+					}//end dir for..
 				}//end while..
 			}//end while..
 			
