@@ -1,4 +1,4 @@
-package fail;
+package Success;
 
 import java.util.Scanner;
 
