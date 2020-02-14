@@ -23,8 +23,8 @@ public class Main_6593_상범빌딩_이다경 {
 	}
 	
 	static int L, R, C;
-	static char[][][] map;
-	static Queue<Node> qu;
+	static char[][][] map = new char[31][31][31];
+	static Queue<Node> qu = new LinkedList<Node>();
 	static int[][] dir = {{-1,0,0},{1,0,0},{0,-1,0},{0,1,0},{0,0,-1},{0,0,1}};//동서남북상하 L,R,C
 
 	
@@ -40,8 +40,7 @@ public class Main_6593_상범빌딩_이다경 {
 			R = Integer.parseInt(st.nextToken());
 			C = Integer.parseInt(st.nextToken());
 			if(L==0 && R==0 && C==0) break;
-			qu = new LinkedList<Node>();
-			map = new char[L][R][C];
+			qu.clear();
 			
 			for (int l = 0; l < L; l++) {
 				for (int r = 0; r < R; r++) {
