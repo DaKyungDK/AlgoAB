@@ -9,6 +9,11 @@ public class a {
 		
 		System.out.println('a'-'A');
 		System.out.println((char)('B'+32));
+		
+		
+		int b = 5;
+		double c = 5.0;
+		if(b==c) System.out.println(5);
 	}
 
 }
